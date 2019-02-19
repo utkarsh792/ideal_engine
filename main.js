@@ -20,16 +20,22 @@ function createWindow()
 		win = null
 	})
 
-	ipcMain.on('show-popup', () => 
+	ipcMain.on('show-popup', (event,message) => 
 	{
 		if(!newwin)
 		{
 			newwin = new BrowserWindow({width: 400, height: 400, parent: win})
+			newwin.webContents.openDevTools()
 			newwin.loadURL(url.format({
 				pathname: path.join(__dirname,'popup.html'),
 				protocol: 'file',
 				slashes: true
 		}))
+			
+			newwin.webContents.on('did-finish-load', () => {
+    		newwin.webContents.send('get-it', message)
+    		console.log("here",message)
+  			})
 
 			newwin.on('closed',() =>
 			{

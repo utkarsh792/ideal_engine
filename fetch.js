@@ -1,5 +1,15 @@
+const { ipcRenderer } = require('electron')
 const names = ["hackrush01"]
 let $ = require('jquery')
+let naam = "a"
+
+ipcRenderer.on('get-it', (event,message) =>
+{
+    naam = message
+    console.log(message, "here")
+    
+})
+
 
 async function fetch_data_for_single_user(name){
     str = "https://api.github.com/users/" + name + "/events?per_page=100"
@@ -43,7 +53,7 @@ function get_no_of_commits_to_repo(json, repo_name){
 function add_table_row(handle, json){
     const tbody = document.getElementById('tbody')
     number_of_commits = get_no_of_commits_to_repo(json, "lbryio/lbry")
-    let something = "<tr>" + "<td>" + handle + "</td>" +"<td>" + number_of_commits + "</td>" +"</tr>"
+    let something = "<tr>" + "<td>" + handle + "</td>" +"<td>" + number_of_commits + "</td>" +"<td>"+naam+"</td></tr>"
     $('#some-table').append(something)
 
     

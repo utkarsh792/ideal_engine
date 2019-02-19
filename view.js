@@ -33,6 +33,8 @@ $('#del-from-list').on('click', () => {
 	//loadAndDisplayContacts()
 })
 
+
+
 function addEntry(name, email) {
 
    if(name && email) {
@@ -45,7 +47,7 @@ function addEntry(name, email) {
                    "<td>" + sno + "</td>" +
                    "<td>" + name + "</td>" +
                    "<td>" + email + "</td>" +
-                   "<td><button class = 'btn btn-primary' name = "+name+" id = 'take-from-list' onclick='return clickit(name)'>Details</button></td>" +
+                   "<td><button class = 'btn btn-primary' name = "+name+" id = 'take-from-list' onclick = 'clickit(name)'>Details</button></td>" +
                    "</tr>"
    }
 }
@@ -56,6 +58,15 @@ function clickit(name)
 	console.log(name)
 	ipcRenderer.send('show-popup', name)
 }
+
+// const takefromlist = document.getElementById('take-from-list')
+
+// takefromlist.addEventListener('click', event =>
+// {
+//   const name = 'vivek'
+//   ipcRenderer.send('show-popup', name)
+//   console.log(name)
+// })
 
 $('#take-from-list-all').on('click', ()=> 
 {
