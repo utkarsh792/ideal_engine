@@ -9,10 +9,12 @@ $('#add-to-list').on('click', () => {
    let email = $('#Email').val()
    console.log(name,email)
 
-   fs.appendFile(filename, name + ',' + email + '\n',(err) => {
-         if(err)
-            console.log(err)
-      })
+   localStorage.setItem(name, email)
+
+   // fs.appendFile(filename,name + ',' + email+'\n',(err) => {
+   //       if(err)
+   //          console.log(err)
+   //    })
 
    addEntry(name, email)
    //loadAndDisplayContacts()
@@ -71,22 +73,28 @@ $('#take-from-list-all').on('click', ()=>
 
 function loadAndDisplayContacts() {  
    
-   //Check if file exists
-   if(fs.existsSync(filename)) {
-      let data = fs.readFileSync(filename, 'utf8').split('\n')
-      
-      data.forEach((contact, index) => {
-         let [ name, email ] = contact.split(',')
-         addEntry(name, email)
-      })
-   
-   } else {
-      console.log("File Doesn\'t Exist. Creating new file.")
-      fs.writeFile(filename, '', (err) => {
-         if(err)
-            console.log(err)
-      })
+
+   for (var i = 0; i < localStorage.length; i++){
+      name = localStorage.key(i)
+      email = localStorage.getItem(name)
+      addEntry(name,email)
    }
+   //Check if file exists
+   // if(fs.existsSync(filename)) {
+   //    let data = fs.readFileSync(filename, 'utf8').split('\n')
+      
+   //    data.forEach((contact, index) => {
+   //       let [ name, email ] = contact.split(',')
+   //       addEntry(name, email)
+   //    })
+   
+   // } else {
+   //    console.log("File Doesn\'t Exist. Creating new file.")
+   //    fs.writeFile(filename, '', (err) => {
+   //       if(err)
+   //          console.log(err)
+   //    })
+   // }
 }
 
 loadAndDisplayContacts()

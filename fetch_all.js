@@ -42,22 +42,24 @@ function add_table_row(handle, json, repo){
 async function do_magic(){
     ipcRenderer.on('get-it', (event) =>
     {
-        if(fs.existsSync(filename)) {
-            let data = fs.readFileSync(filename, 'utf8').split('\n')
+        for (var i = 0; i < localStorage.length; i++){
+            handle = localStorage.key(i)
+            repo = localStorage.getItem(handle)
+            console.log(handle,repo)
+            fetch_data_for_single_user(handle, repo)
+        }
+        // if(fs.existsSync(filename)) {
+        //     let data = fs.readFileSync(filename, 'utf8').split('\n')
             
-            data.forEach((contact, index) => {
-               [ handle, repo ] = contact.split(',')
-               console.log(handle,repo)
-               fetch_data_for_single_user(handle, repo)
-            })
+        //     data.forEach((contact, index) => {
+        //        [ handle, repo ] = contact.split(',')
+        //        console.log(handle,repo)
+        //        fetch_data_for_single_user(handle, repo)
+        //     })
          
-         } else {
-            console.log("File Doesn\'t Exist. Creating new file.")
-            fs.writeFile(filename, '', (err) => {
-               if(err)
-                  console.log(err)
-            })
-         }
+        //  } else {
+        //     console.log("File Doesn\'t Exist.")
+        //  }
     })
 }
 

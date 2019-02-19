@@ -10,7 +10,7 @@ function createWindow()
 {
 	win = new BrowserWindow({width: 800, height: 600})
 	//win.loadFile('index.html')
-	win.webContents.openDevTools()
+	//win.webContents.openDevTools()
 	win.loadURL(url.format ({
 		pathname: path.join(__dirname, 'index.html'),
 		protocol: 'file:',
@@ -25,7 +25,7 @@ function createWindow()
 		if(!newwin)
 		{
 			newwin = new BrowserWindow({width: 400, height: 400, parent: win})
-			newwin.webContents.openDevTools()
+			//newwin.webContents.openDevTools()
 			newwin.loadURL(url.format({
 				pathname: path.join(__dirname,'popup.html'),
 				protocol: 'file',
@@ -48,7 +48,7 @@ function createWindow()
 		if(!all_newwin)
 		{
 			all_newwin = new BrowserWindow({width: 400, height: 400, parent: win})
-			all_newwin.webContents.openDevTools()
+			//all_newwin.webContents.openDevTools()
 			all_newwin.loadURL(url.format({
 				pathname: path.join(__dirname,'popup_all.html'),
 				protocol: 'file',
