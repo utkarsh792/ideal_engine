@@ -43,11 +43,12 @@ function addEntry(name, email) {
       //    + email +'</td>'+ '<td><button class = "btn btn-primary" name = '+name+' id = "take-from-list">Details</button></td></tr>'
       // $('#contact-table').append(updateString)
       const table = document.getElementById('contact-table')
+      const arr = [name,email]
       table.innerHTML += "<tr>" + 
                    "<td>" + sno + "</td>" +
                    "<td>" + name + "</td>" +
                    "<td>" + email + "</td>" +
-                   "<td><button class = 'btn btn-primary' name = "+name+" id = 'take-from-list' onclick = 'clickit(name)'>Details</button></td>" +
+                   "<td><button class = 'btn btn-primary' name = "+arr+" id = 'take-from-list' onclick = 'clickit(name)'>Details</button></td>" +
                    "</tr>"
    }
 }
@@ -59,14 +60,7 @@ function clickit(name)
 	ipcRenderer.send('show-popup', name)
 }
 
-// const takefromlist = document.getElementById('take-from-list')
 
-// takefromlist.addEventListener('click', event =>
-// {
-//   const name = 'vivek'
-//   ipcRenderer.send('show-popup', name)
-//   console.log(name)
-// })
 
 $('#take-from-list-all').on('click', ()=> 
 {

@@ -1,60 +1,64 @@
-const names = ["hackrush01", "jackrobison"]
 let $ = require('jquery')
+let fs = require('fs')
+let filename = 'contacts'
+let sno = 0
+const { ipcRenderer } = require('electron')
+let handle
+let repo
 
-async function fetch_data_for_single_user(name){
-    str = "https://api.github.com/users/" + name + "/events?per_page=100"
+async function fetch_data_for_single_user(handle,repo){
+    str = "https://api.github.com/users/" + handle + "/events?per_page=100"
     console.log(str)
     const response = await fetch(str);
     const myJson = await response.json();
     console.log(myJson)
-    return myJson
+    add_table_row(handle, myJson, repo)
+    
 }
 
-async function fetch_data_for_all_users(){
-    requests = []
-    for (let index = 0; index < names.length; ++index){
-        console.log(names[index])
-        requests.push(fetch_data_for_single_user(names[index]))
-    }
+function get_no_of_commits_to_repo(json, repo){
 
-    results = []
-    for (const request of requests){
-        results.push(await request)
-    }
-
-    result_obj = {}
-    for (let index = 0; index < names.length; ++index){
-        result_obj[names[index]] = results[index]
-    }
-    console.log(result_obj)
-    return result_obj
-}
-
-function get_no_of_commits_to_repo(json, repo_name){
     count = 0
     for (key in json){
-        if (json[key].type === "PushEvent" && json[key].repo.name === repo_name){
+        if (json[key].type === "PushEvent" && json[key].repo.name === repo){
             count++
         }
     }
     return count
 }
 
-function add_table_row(handle, json){
+function add_table_row(handle, json, repo){
+
+    console.log("herehereherhe")
     const tbody = document.getElementById('tbody')
-    number_of_commits = get_no_of_commits_to_repo(json, "lbryio/lbry")
-    let something = "<tr>" + "<td>" + handle + "</td>" +"<td>" + number_of_commits + "</td>" +"</tr>"
+    console.log(repo)
+    number_of_commits = get_no_of_commits_to_repo(json, repo)
+    let something = "<tr>" + "<td>" + handle + "</td>" +"<td>" + number_of_commits + "</td>" +"<td>"+repo+"</td></tr>"
     $('#some-table').append(something)
 
     
 }
 
 async function do_magic(){
-    results = await fetch_data_for_all_users()
-
-    for (key in results){
-        add_table_row(key, results[key])
-    }
+    ipcRenderer.on('get-it', (event) =>
+    {
+        if(fs.existsSync(filename)) {
+            let data = fs.readFileSync(filename, 'utf8').split('\n')
+            
+            data.forEach((contact, index) => {
+               [ handle, repo ] = contact.split(',')
+               console.log(handle,repo)
+               fetch_data_for_single_user(handle, repo)
+            })
+         
+         } else {
+            console.log("File Doesn\'t Exist. Creating new file.")
+            fs.writeFile(filename, '', (err) => {
+               if(err)
+                  console.log(err)
+            })
+         }
+    })
 }
 
-document.addEventListener("DOMContentLoaded", do_magic())
+document.addEventListener("DOMContentLoaded", do_magic(handle,repo))

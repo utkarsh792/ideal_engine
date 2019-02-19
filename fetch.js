@@ -1,49 +1,24 @@
 const { ipcRenderer } = require('electron')
-const names = ["hackrush01"]
+//const names = ["hackrush01"]
 let $ = require('jquery')
-let naam = "a"
+let handle
+let repo
 
-ipcRenderer.on('get-it', (event,message) =>
-{
-    naam = message
-    console.log(message, "here")
-    
-})
-
-
-async function fetch_data_for_single_user(name){
-    str = "https://api.github.com/users/" + name + "/events?per_page=100"
+async function fetch_data_for_single_user(handle){
+    str = "https://api.github.com/users/" + handle + "/events?per_page=100"
     console.log(str)
     const response = await fetch(str);
     const myJson = await response.json();
     console.log(myJson)
-    return myJson
+    add_table_row(handle, myJson)
+    
 }
 
-async function fetch_data_for_all_users(){
-    requests = []
-    for (let index = 0; index < names.length; ++index){
-        console.log(names[index])
-        requests.push(fetch_data_for_single_user(names[index]))
-    }
+function get_no_of_commits_to_repo(json, repo){
 
-    results = []
-    for (const request of requests){
-        results.push(await request)
-    }
-
-    result_obj = {}
-    for (let index = 0; index < names.length; ++index){
-        result_obj[names[index]] = results[index]
-    }
-    console.log(result_obj)
-    return result_obj
-}
-
-function get_no_of_commits_to_repo(json, repo_name){
     count = 0
     for (key in json){
-        if (json[key].type === "PushEvent" && json[key].repo.name === repo_name){
+        if (json[key].type === "PushEvent" && json[key].repo.name === repo){
             count++
         }
     }
@@ -51,20 +26,29 @@ function get_no_of_commits_to_repo(json, repo_name){
 }
 
 function add_table_row(handle, json){
+
+    console.log("herehereherhe")
     const tbody = document.getElementById('tbody')
-    number_of_commits = get_no_of_commits_to_repo(json, "lbryio/lbry")
-    let something = "<tr>" + "<td>" + handle + "</td>" +"<td>" + number_of_commits + "</td>" +"<td>"+naam+"</td></tr>"
+    console.log(repo)
+    number_of_commits = get_no_of_commits_to_repo(json, repo)
+    let something = "<tr>" + "<td>" + handle + "</td>" +"<td>" + number_of_commits + "</td>" +"<td>"+repo+"</td></tr>"
     $('#some-table').append(something)
 
     
 }
 
 async function do_magic(){
-    results = await fetch_data_for_all_users()
-
-    for (key in results){
-        add_table_row(key, results[key])
-    }
+    ipcRenderer.on('get-it', (event,message) =>
+    {
+        const array = message.split(',')
+        console.log(array, "here")
+        const handle1 = array[0]
+        const repo1 = array[1]
+        handle = handle1
+        repo = repo1
+        console.log(handle,repo)
+        fetch_data_for_single_user(handle)    
+    })
 }
 
 document.addEventListener("DOMContentLoaded", do_magic())

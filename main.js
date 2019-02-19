@@ -34,7 +34,7 @@ function createWindow()
 			
 			newwin.webContents.on('did-finish-load', () => {
     		newwin.webContents.send('get-it', message)
-    		console.log("here",message)
+    		console.log(message)
   			})
 
 			newwin.on('closed',() =>
@@ -48,11 +48,15 @@ function createWindow()
 		if(!all_newwin)
 		{
 			all_newwin = new BrowserWindow({width: 400, height: 400, parent: win})
+			all_newwin.webContents.openDevTools()
 			all_newwin.loadURL(url.format({
 				pathname: path.join(__dirname,'popup_all.html'),
 				protocol: 'file',
 				slashes: true
 		}))
+			all_newwin.webContents.on('did-finish-load', () => {
+    		all_newwin.webContents.send('get-it')
+  			})
 
 			all_newwin.on('closed',() =>
 			{
