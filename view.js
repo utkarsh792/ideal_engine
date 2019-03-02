@@ -22,16 +22,17 @@ $('#add-to-list').on('click', () => {
 
 
 $('#del-from-list').on('click', () => {
-	fs.unlink(filename, function(err)
-	{
-		if(err)
-		{
-			return console.error(err)
-		}
+	//fs.unlink(filename, function(err)
+	//{
+		// if(err)
+		// {
+		// 	return console.error(err)
+		// }
 		console.log("file deleted")
 		sno=0
-		$('#contact-table td').remove()
-	})
+		$('#contact-table tr').remove()
+    localStorage.clear();
+	//})
 	//loadAndDisplayContacts()
 })
 
