@@ -12,6 +12,7 @@
             overflow-y: auto;
          }
       </style>
+      <script type="text/javascript" src="parse_csv.js"></script>
    </head>
    
    <body>
@@ -31,6 +32,11 @@
          
          <div class = "form-group">
             <button class = "btn btn-primary" id = "add-to-list">Add to list!</button>
+         </div>
+
+         <div class = "form-group">
+             <input type = "file" name = "fileUpload" id = "fileUpload"/> 
+            <button class = "btn btn-primary" id = "add-to-list-from-csv" onclick="upload()">Upload CSV</button>
          </div>
          
          <div id = "contact-list">
